@@ -1,6 +1,6 @@
 import 'bulma/css/bulma.css';
 import './App.scss';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 
 export const goods = [
@@ -16,90 +16,68 @@ export const goods = [
   'Garlic',
 ];
 
-export const SelectGoods = ({ selectGood, setSelectGood }) => (
-  <>
-    {selectGood.length === 0 ? (
-      <h1 className="title is-flex is-align-items-center">No goods selected</h1>
-    ) : (
-      selectGood.map(good => (
+export const App = () => {
+  const [selectGood, setSelectGood] = useState('Jam');
+
+  return (
+    <main className="section container">
+      {selectGood === '' ? (
         <h1 className="title is-flex is-align-items-center">
-          {good} is selected
+          No goods selected
+        </h1>
+      ) : (
+        <h1 className="title is-flex is-align-items-center">
+          {selectGood} is selected
           <button
             onClick={() => {
-              setSelectGood(selectGood.filter(el => el !== good));
+              setSelectGood('');
             }}
             data-cy="ClearButton"
             type="button"
             className="delete ml-3"
           />
         </h1>
-      ))
-    )}
-    {}
-  </>
-);
+      )}
 
-const AddGoods = ({ items, selectGood, setSelectGood }) => (
-  <table className="table">
-    <tbody>
-      {items.map(good => (
-        <tr
-          data-cy="Good"
-          // key={index}
-          className={classNames({
-            'has-background-success-light': selectGood.find(
-              item => item === good,
-            ),
-          })}
-        >
-          <td>
-            <button
-              onClick={() => {
-                const action = selectGood.find(item => item === good)
-                  ? 'remove'
-                  : 'add';
-
-                if (action === 'add') {
-                  setSelectGood([good]);
-                } else {
-                  setSelectGood(selectGood.filter(item => item !== good));
-                }
-              }}
-              data-cy={
-                selectGood.find(item => item === good)
-                  ? 'RemoveButton'
-                  : 'AddButton'
-              }
-              type="button"
-              className={classNames('button', {
-                'is-info': selectGood.find(item => item === good),
+      <table className="table">
+        <tbody>
+          {goods.map(good => (
+            <tr
+              data-cy="Good"
+              className={classNames({
+                'has-background-success-light': selectGood.includes(good),
               })}
             >
-              {selectGood.find(item => item === good) ? '-' : '+'}
-            </button>
-          </td>
+              <td>
+                <button
+                  data-cy={
+                    selectGood.includes(good) ? 'RemoveButton' : 'AddButton'
+                  }
+                  type="button"
+                  className={classNames('button', {
+                    'is-info': selectGood.includes(good),
+                  })}
+                  onClick={() => {
+                    const action = selectGood.includes(good) ? 'remove' : 'add';
 
-          <td data-cy="GoodTitle" className="is-vcentered">
-            {good}
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
+                    if (action === 'add') {
+                      setSelectGood(good);
+                    } else {
+                      setSelectGood('');
+                    }
+                  }}
+                >
+                  {selectGood.includes(good) ? '-' : '+'}
+                </button>
+              </td>
 
-export const App = () => {
-  const [selectGood, setSelectGood] = useState(['Jam']);
-
-  return (
-    <main className="section container">
-      <SelectGoods selectGood={selectGood} setSelectGood={setSelectGood} />
-
-      <AddGoods
-        items={goods}
-        selectGood={selectGood}
-        setSelectGood={setSelectGood}
-      />
+              <td data-cy="GoodTitle" className="is-vcentered">
+                {good}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </main>
   );
 };
